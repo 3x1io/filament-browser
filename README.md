@@ -2,6 +2,21 @@
 
 File & Folders & Media Browser With Code Editor
 
+## Features
+
+- File Browser
+- Code Editor with highlights
+- Media Viewer
+- .Env Editor
+
+## Screenshots
+
+![Screenshot of list](./arts/1.png)
+![Screenshot of editor](./arts/2.png)
+![Screenshot of image](./arts/3.png)
+![Screenshot of .env](./arts/4.png)
+
+
 ## Installation
 
 You can install the package via composer:
@@ -9,6 +24,7 @@ You can install the package via composer:
 ```bash
 composer require 3x1io/filament-browser
 ```
+
 
 Then publish the assets:
 
