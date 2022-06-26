@@ -23,7 +23,7 @@ class BrowserController extends Controller
         } else if ($request->has('file_path')) {
             $name = $request->get('file_name');
             $setFilePath = $request->get('file_path');
-            $root = str_replace('/' . $name, '', $request->get('file_path'));
+            $root = str_replace(DIRECTORY_SEPARATOR . $name, '', $request->get('file_path'));
         } else {
             $root = base_path();
             $name = base_path();
@@ -43,20 +43,20 @@ class BrowserController extends Controller
             foreach ($folders as $folder) {
                 array_push($foldersArray, [
                     "path" => $folder,
-                    "name" => str_replace($root . '/', '', $folder),
+                    "name" => str_replace($root . DIRECTORY_SEPARATOR, '', $folder),
                 ]);
             }
 
             foreach ($files as $file) {
                 array_push($filesArray, [
                     "path" => $file->getRealPath(),
-                    "name" => str_replace($root . '/', '', $file),
+                    "name" => str_replace($root . DIRECTORY_SEPARATOR, '', $file),
                 ]);
             }
 
 
 
-            $exploadName = explode('/', $root);
+            $exploadName = explode(DIRECTORY_SEPARATOR, $root);
             $count = count($exploadName);
             $setName = $exploadName[$count - 1];
 
@@ -95,7 +95,7 @@ class BrowserController extends Controller
             foreach ($folders as $folder) {
                 array_push($foldersArray, [
                     "path" => $folder,
-                    "name" => str_replace($root . '/', '', $folder),
+                    "name" => str_replace($root . DIRECTORY_SEPARATOR, '', $folder),
                 ]);
             }
 
@@ -103,7 +103,7 @@ class BrowserController extends Controller
                 $ex = File::extension($file);
                 array_push($filesArray, [
                     "path" => $file->getRealPath(),
-                    "name" => str_replace($root . '/', '', $file),
+                    "name" => str_replace($root . DIRECTORY_SEPARATOR, '', $file),
                     "ex" => $ex
                 ]);
             }
@@ -115,7 +115,7 @@ class BrowserController extends Controller
                 ]);
             }
 
-            $exploadName = explode('/', $root);
+            $exploadName = explode(DIRECTORY_SEPARATOR, $root);
             $count = count($exploadName);
             $setName = $exploadName[$count - 2];
 
@@ -124,7 +124,7 @@ class BrowserController extends Controller
             return response()->json([
                 "folders" => $foldersArray,
                 "files" => $filesArray,
-                "back_path" => str_replace('/' . $name, '', $root),
+                "back_path" => str_replace(DIRECTORY_SEPARATOR . $name, '', $root),
                 "back_name" => $setName,
                 "current_path" => $root,
             ], 200);
