@@ -30,14 +30,14 @@ class Browser extends Page
         foreach ($folders as $folder) {
             array_push($foldersArray, [
                 "path" => $folder,
-                "name" => str_replace(base_path() . '/', '', $folder),
+                "name" => str_replace(base_path() . DIRECTORY_SEPARATOR, '', $folder),
             ]);
         }
 
         foreach ($files as $file) {
             array_push($filesArray, [
                 "path" => $file->getRealPath(),
-                "name" => str_replace(base_path() . '/', '', $file),
+                "name" => str_replace(base_path() . DIRECTORY_SEPARATOR, '', $file),
             ]);
         }
 
@@ -48,14 +48,14 @@ class Browser extends Page
             ]);
         }
 
-        $exploadName = explode('/', $root);
+        $exploadName = explode(DIRECTORY_SEPARATOR, $root);
         $count = count($exploadName);
         $setName = $exploadName[$count - 1];
 
         return [
             "folders" => $foldersArray,
             "files" => $filesArray,
-            "back_path" => str_replace('/' . $name, '', $root),
+            "back_path" => str_replace(DIRECTORY_SEPARATOR . $name, '', $root),
             "back_name" => $setName,
             "current_path" => $root
         ];
