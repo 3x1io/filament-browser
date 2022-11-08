@@ -9,7 +9,7 @@ class Browser extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
-    protected static ?string $heading = 'Browser';
+    protected static ?string $pageHeading = 'Browser';
 
     protected static string $view = 'filament-browser::browser';
 
@@ -96,11 +96,11 @@ class Browser extends Page
 
     public static function heading(?string $string): void
     {
-        static::$heading = $string;
+        static::$pageHeading = $string;
     }
 
     protected function getHeading(): string
     {
-        return static::$heading;
+        return static::$pageHeading;
     }
 }
