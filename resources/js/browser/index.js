@@ -135,7 +135,7 @@ Vue.component('browser', {
                         timerProgressBar: true,
                         timer: 3000,
                         icon: 'success',
-                        title: 'File Has Been Saved Success!'
+                        title: data.data.message
                     });
                 }
             })
