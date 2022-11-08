@@ -9,6 +9,8 @@ class Browser extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
+    protected static ?string $heading = 'Browser';
+
     protected static string $view = 'filament-browser::browser';
 
     protected static ?string $navigationGroup = 'Settings';
@@ -20,24 +22,25 @@ class Browser extends Page
 
     protected function getViewData(): array
     {
-        $folders =  File::directories(base_path());
-        $files =  File::files(base_path());
+        $startPath = config('filament-browser.start_path');
+        $folders =  File::directories($startPath);
+        $files =  File::files($startPath);
         $foldersArray = [];
         $filesArray = [];
-        $root = base_path();
-        $name = base_path();
+        $root = $startPath;
+        $name = $startPath;
 
         foreach ($folders as $folder) {
             array_push($foldersArray, [
                 "path" => $folder,
-                "name" => str_replace(base_path() . DIRECTORY_SEPARATOR, '', $folder),
+                "name" => str_replace($startPath . DIRECTORY_SEPARATOR, '', $folder),
             ]);
         }
 
         foreach ($files as $file) {
             array_push($filesArray, [
                 "path" => $file->getRealPath(),
-                "name" => str_replace(base_path() . DIRECTORY_SEPARATOR, '', $file),
+                "name" => str_replace($startPath . DIRECTORY_SEPARATOR, '', $file),
             ]);
         }
 
@@ -47,6 +50,16 @@ class Browser extends Page
                 "name" => ".env",
             ]);
         }
+
+        $foldersArray = array_filter($foldersArray, function ($folder) {
+            $path = str_replace(base_path() . DIRECTORY_SEPARATOR, '', $folder['path']);
+            return !in_array($path, config('filament-browser.hidden_folders'));
+        });
+
+        $filesArray = array_filter($filesArray, function ($file) {
+            $path = str_replace(base_path() . DIRECTORY_SEPARATOR, '', $file['path']);
+            return !in_array($path, config('filament-browser.hidden_files'));
+        });
 
         $exploadName = explode(DIRECTORY_SEPARATOR, $root);
         $count = count($exploadName);
@@ -59,5 +72,35 @@ class Browser extends Page
             "back_name" => $setName,
             "current_path" => $root
         ];
+    }
+
+    public static function navigationGroup(?string $group): void
+    {
+        static::$navigationGroup = $group;
+    }
+
+    public static function navigationIcon(?string $icon): void
+    {
+        static::$navigationIcon = $icon;
+    }
+
+    public static function navigationSort(?int $sort): void
+    {
+        static::$navigationSort = $sort;
+    }
+
+    public static function navigationLabel(?string $string): void
+    {
+        static::$navigationLabel = $string;
+    }
+
+    public static function heading(?string $string): void
+    {
+        static::$heading = $string;
+    }
+
+    protected function getHeading(): string
+    {
+        return static::$heading;
     }
 }
