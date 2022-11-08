@@ -26,8 +26,9 @@ class BrowserController extends Controller
             $setFilePath = $request->get('file_path');
             $root = str_replace(DIRECTORY_SEPARATOR . $name, '', $request->get('file_path'));
         } else {
-            $root = base_path();
-            $name = base_path();
+            $startPath = config('filament-browser.start_path');
+            $root = $startPath;
+            $name = $startPath;
             $type = "home";
         }
 
@@ -81,7 +82,7 @@ class BrowserController extends Controller
             $checkIfFileEx = File::exists($filename);
             if ($checkIfFileEx) {
                 File::put($filename, $request->get('content'));
-                
+
                 BrowserFileSaved::dispatch($filename);
 
                 return response()->json([
