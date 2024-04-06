@@ -5,6 +5,7 @@ namespace io3x1\FilamentBrowser\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use io3x1\FilamentBrowser\Events\BrowserFileSaved;
 
 class BrowserController extends Controller
 {
@@ -25,8 +26,9 @@ class BrowserController extends Controller
             $setFilePath = $request->get('file_path');
             $root = str_replace(DIRECTORY_SEPARATOR . $name, '', $request->get('file_path'));
         } else {
-            $root = base_path();
-            $name = base_path();
+            $startPath = config('filament-browser.start_path');
+            $root = $startPath;
+            $name = $startPath;
             $type = "home";
         }
 
@@ -54,8 +56,6 @@ class BrowserController extends Controller
                 ]);
             }
 
-
-
             $exploadName = explode(DIRECTORY_SEPARATOR, $root);
             $count = count($exploadName);
             $setName = $exploadName[$count - 1];
@@ -78,12 +78,16 @@ class BrowserController extends Controller
                 "path" => $setFilePath
             ], 200);
         } elseif ($request->has('content')) {
-            $checkIfFileEx = File::exists($request->get('path'));
+            $filename = $request->get('path');
+            $checkIfFileEx = File::exists($filename);
             if ($checkIfFileEx) {
-                File::put($request->get('path'), $request->get('content'));
+                File::put($filename, $request->get('content'));
+
+                BrowserFileSaved::dispatch($filename);
 
                 return response()->json([
-                    "success" => true
+                    "success" => true,
+                    "message" => __('File saved successfully!')
                 ]);
             }
         } else {
@@ -115,11 +119,19 @@ class BrowserController extends Controller
                 ]);
             }
 
+            $foldersArray = array_filter($foldersArray, function ($folder) {
+                $path = str_replace(base_path() . DIRECTORY_SEPARATOR, '', $folder['path']);
+                return !in_array($path, config('filament-browser.hidden_folders'));
+            });
+
+            $filesArray = array_filter($filesArray, function ($file) {
+                $path = str_replace(base_path() . DIRECTORY_SEPARATOR, '', $file['path']);
+                return !in_array($path, config('filament-browser.hidden_files'));
+            });
+
             $exploadName = explode(DIRECTORY_SEPARATOR, $root);
             $count = count($exploadName);
             $setName = $exploadName[$count - 2];
-
-
 
             return response()->json([
                 "folders" => $foldersArray,
